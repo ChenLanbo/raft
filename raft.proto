@@ -1,0 +1,42 @@
+syntax = "proto3";
+
+package raft;
+
+message VoteRequest {
+    string peer = 1;
+    uint64 term = 2;
+    uint64 latestLogTerm = 3;
+    uint64 latestLogIndex = 4;
+}
+
+message VoteReply {
+    string peer = 1;
+    bool granted = 2;
+    uint64 term = 3;
+}
+
+message AppendRequest {
+    string peer = 1;
+    uint64 term = 2;
+    uint64 previousLogTerm = 3;
+    uint64 previousLogIndex = 4;
+    uint64 commintIndex = 5;
+    repeated RaftLog entries = 6;
+}
+
+message AppendReply {
+    string peer = 1;
+    bool success = 2;
+    uint64 term = 3;
+}
+
+message RaftLog {
+    uint64 term = 1;
+    uint64 index = 2;
+    bytes payload = 3;
+}
+
+service Raft {
+    rpc Vote(VoteRequest) returns(VoteReply) {}
+    rpc Append(AppendRequest) returns(AppendReply) {}
+}
